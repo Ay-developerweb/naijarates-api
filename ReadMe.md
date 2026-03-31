@@ -1,166 +1,103 @@
 # NaijaRates API
 
-> A free, open-source REST API for real-time Nigerian exchange rates, fuel prices, and commodity market data.
+> A professional-grade, open-source REST API for real-time Nigerian exchange rates, fuel prices, and commodity market data.
 
-Nigeria runs on data that's hard to access programmatically. Bank rates differ from street rates. Fuel prices shift weekly. Market data is scattered across PDFs, news sites, and WhatsApp groups. NaijaRates API fixes that — one clean API, consistently updated, free to use.
-
----
-
-## What It Does
-
-- Returns current USD/NGN, GBP/NGN, EUR/NGN exchange rates (official CBN rate + parallel market rate)
-- Tracks current fuel pump prices across Nigerian states
-- Exposes commodity price data (rice, cement, diesel) updated on a schedule
-- Lightweight, fast, and built to be embedded in apps, bots, dashboards, and scripts
+NaijaRates API provides a structured, programmatic way to access critical Nigerian economic data. Built with FastAPI and powered by background scrapers, it ensures that developers have access to consistent, up-to-date indicators for their applications.
 
 ---
 
-## Tech Stack
+## 🚀 Features
+
+- **Multi-Source Exchange Rates**: USD/NGN, GBP/NGN, and EUR/NGN (Official CBN vs. Parallel Market).
+- **National Fuel Prices**: Track national average pump prices for PMS, Diesel, and Kerosene.
+- **Commodity Market Tracking**: Key market prices for essential goods like Rice and Cement.
+- **Professional Architecture**: Clean Service Layer, Background Schedulers, and Persistent Storage.
+- **Enterprise-Ready**: Dockerized, versioned API, and fully documented with Swagger/OpenAPI.
+
+---
+
+## 🛠️ Tech Stack
 
 | Layer | Technology |
 |---|---|
 | Framework | FastAPI |
 | Language | Python 3.11+ |
 | Scheduler | APScheduler |
-| Data Storage | SQLite (dev) / PostgreSQL (prod) |
+| Config | Pydantic Settings & Dotenv |
+| Data Storage | SQLite (Local/Dev) / PostgreSQL compatible |
 | Containerization | Docker + Docker Compose |
-| Docs | Auto-generated via Swagger UI |
+| Documentation | Swagger UI & ReDoc |
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
-```
+```text
 naijarates-api/
 ├── app/
-│   ├── main.py              # FastAPI app entry point
+│   ├── core/
+│   │   └── config.py        # Centralized settings & env management
+│   ├── services/
+│   │   ├── data_service.py  # Data extraction & business logic
+│   │   └── scraper.py       # Market scraping & ingestion engine
 │   ├── routes/
-│   │   ├── exchange.py      # Exchange rate endpoints
-│   │   ├── fuel.py          # Fuel price endpoints
-│   │   └── commodities.py   # Commodity price endpoints
+│   │   ├── exchange.py      # Exchange rate controllers
+│   │   ├── fuel.py          # Fuel price controllers
+│   │   └── commodities.py   # Commodity price controllers
 │   ├── scheduler/
-│   │   └── jobs.py          # APScheduler data refresh jobs
+│   │   └── jobs.py          # Background refresh job definitions
 │   ├── models/
-│   │   └── schemas.py       # Pydantic models
-│   └── db/
-│       └── database.py      # DB connection and setup
+│   │   └── schemas.py       # Pydantic validation & documentation schemas
+│   ├── db/
+│   │   └── database.py      # SQLAlchemy connection & models
+│   └── main.py              # Application entry point & middleware
 ├── tests/
-│   └── test_routes.py
-├── Dockerfile
-├── docker-compose.yml
-├── requirements.txt
+│   └── test_routes.py       # API integrity tests
+├── Dockerfile               # Production-ready image
+├── docker-compose.yml       # Orchestration
+├── requirements.txt         # Dependency manifest
 └── README.md
 ```
 
 ---
 
-## API Endpoints
+## 📡 API Documentation
 
-### Exchange Rates
+Visit `{host}/docs` for the interactive Swagger UI or `{host}/redoc` for detailed API documentation.
 
-```
-GET /rates/exchange
-```
+### Base URL: `http://localhost:8000/api/v1`
 
-Returns current exchange rates from both CBN official and parallel market sources.
-
-**Sample Response:**
-```json
-{
-  "timestamp": "2026-03-31T10:00:00Z",
-  "base_currency": "NGN",
-  "rates": {
-    "USD": {
-      "cbn_official": 1580.50,
-      "parallel_market": 1615.00
-    },
-    "GBP": {
-      "cbn_official": 2010.30,
-      "parallel_market": 2045.00
-    },
-    "EUR": {
-      "cbn_official": 1720.00,
-      "parallel_market": 1755.00
-    }
-  }
-}
-```
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/rates/exchange` | USD, GBP, EUR (CBN/Parallel) |
+| `GET` | `/rates/fuel` | PMS, Diesel, Kerosene prices |
+| `GET` | `/rates/commodities` | Rice, Cement, Cooking Gas |
+| `GET` | `/` | System health & version status |
 
 ---
 
-### Fuel Prices
-
-```
-GET /rates/fuel
-```
-
-Returns current pump prices per litre across Nigeria.
-
-**Sample Response:**
-```json
-{
-  "timestamp": "2026-03-31T10:00:00Z",
-  "currency": "NGN",
-  "prices_per_litre": {
-    "PMS": 897.00,
-    "diesel": 1210.00,
-    "kerosene": 1450.00
-  },
-  "note": "Prices reflect national average. Regional variation may apply."
-}
-```
-
----
-
-### Commodities
-
-```
-GET /rates/commodities
-```
-
-Returns current market prices for key Nigerian commodities.
-
-**Sample Response:**
-```json
-{
-  "timestamp": "2026-03-31T10:00:00Z",
-  "currency": "NGN",
-  "commodities": {
-    "rice_50kg_bag": 85000,
-    "cement_50kg_bag": 9500,
-    "cooking_gas_per_kg": 1800
-  }
-}
-```
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Python 3.11+
-- Docker (optional but recommended)
+## 🏁 Getting Started
 
 ### Run Locally
 
-```bash
-# Clone the repo
-git clone https://github.com/aython-dev/naijarates-api.git
-cd naijarates-api
+1. **Clone & Enter Directory:**
+   ```bash
+   git clone https://github.com/Ay-developerweb/naijarates-api.git
+   cd naijarates-api
+   ```
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+2. **Setup Environment:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   copy .env.example .env     # Windows: copy .env.example .env
+   ```
 
-# Install dependencies
-pip install -r requirements.txt
-
-# Start the server
-uvicorn app.main:app --reload
-```
-
-Visit `http://localhost:8000/docs` for the interactive Swagger UI.
+3. **Start the Engine:**
+   ```bash
+   uvicorn app.main:app --reload
+   ```
 
 ### Run with Docker
 
@@ -170,56 +107,40 @@ docker-compose up --build
 
 ---
 
-## Scheduler
+## 🔄 Data Refresh Schedule
 
-Data is refreshed automatically using APScheduler:
+The system automatically updates its internal database using background workers:
 
-| Data Type | Refresh Interval |
+| Category | Frequency |
 |---|---|
-| Exchange rates | Every 6 hours |
-| Fuel prices | Every 24 hours |
-| Commodities | Every 48 hours |
+| **Exchange Rates** | Every 6 Hours |
+| **Fuel Prices** | Every 24 Hours |
+| **Commodities** | Every 48 Hours |
 
 ---
 
-## Roadmap
+## 🗺️ Roadmap
 
-- [x] Project structure and API design
-- [ ] Exchange rate scraper and scheduler
-- [ ] Fuel price data integration
-- [ ] Commodity price endpoint
-- [ ] Docker setup
-- [ ] PostgreSQL production config
-- [ ] Rate limiting and API key support
-- [ ] Public deployment (Railway / Render)
-- [ ] Historical data endpoint
-
----
-
-## Why I Built This
-
-Nigerian developers building fintech apps, budget tools, e-commerce platforms, or just weekend projects constantly hit the same wall: there's no clean, free, programmatic way to get basic economic data for Nigeria.
-
-This project exists to change that, starting small and building toward something the ecosystem can actually rely on.
+- [x] Versioned API Design (`/v1`)
+- [x] Professional Service/Scraper Layer
+- [x] Background Ingestion Engine
+- [x] Persistence Layer (SQLite/JSON)
+- [x] Dockerization
+- [ ] Implement live BeautifulSoup scrapers for specific sites
+- [ ] PostgreSQL production configuration
+- [ ] API Key & Rate Limiting
+- [ ] Historical Data Time-series endpoints
 
 ---
 
-## Contributing
-
-Contributions are welcome. If you know a reliable data source for any of the endpoints above, open an issue or submit a PR.
-
----
-
-## License
-
-MIT License. Free to use, fork, and build on.
-
----
-
-## Author
+## ✍️ Author
 
 **Ayomide Adediran**
 Backend Engineer | Python, FastAPI, Rust
-Ibadan, Nigeria
+[Portfolio](https://aython-site.vercel.app) | [WhatsApp](https://wa.me/2349074140454)
 
-[Portfolio](https://aython-site.vercel.app) | [Email](mailto:ayomideadediran45@gmail.com) | [WhatsApp](https://wa.me/2349074140454)
+---
+
+## 📜 License
+
+MIT License. Free to use, fork, and build on.
